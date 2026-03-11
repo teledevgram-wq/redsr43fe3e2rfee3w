@@ -4,7 +4,7 @@
 const GITHUB_CONFIG = {
     username: 'teledevgram-wq',           // Твой ник на GitHub
     repo: 'redsr43fe3e2rfee3w', // Название репозитория
-    token: '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' // Токен (получи выше)
+    token: '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' // Токен (получи выше)
 };
 
 // Сохраняем в localStorage для безопасности
