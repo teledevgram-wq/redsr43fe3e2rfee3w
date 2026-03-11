@@ -57,16 +57,23 @@
     <main class="container">
         <h1>ПАНЕЛЬ УПРАВЛЕНИЯ</h1>
         
-        <!-- Поиск в Steam -->
-        <div style="background: #f5f5f5; padding: 20px; margin: 20px 0;">
-            <h3>НАЙТИ ИГРУ В STEAM</h3>
-            <div class="form-group">
-                <label>Steam ID:</label>
-                <input type="text" id="steamId" value="730" placeholder="730">
-            </div>
-            <button class="btn" onclick="findGame()">НАЙТИ</button>
-            <div id="loading" style="display: none;">Поиск...</div>
-        </div>
+<!-- Поиск игры в Steam -->
+<div class="steam-search">
+    <h2 style="margin-bottom: 1.5rem;">🔍 НАЙТИ ИГРУ В STEAM</h2>
+    
+    <div class="form-row">
+        <label>STEAM ID:</label>
+        <input type="text" id="steamId" placeholder="730 (Counter-Strike 2)">
+    </div>
+    
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button class="btn" onclick="searchSteamGame()">🔍 НАЙТИ ЧЕРЕЗ API</button>
+        <button class="btn" onclick="manualInput()">✍️ РУЧНОЙ ВВОД</button>
+        <button class="btn" onclick="clearForm()">🗑️ ОЧИСТИТЬ</button>
+    </div>
+    
+    <div class="loading-spinner" id="loading">ПОИСК...</div>
+</div>
         
         <!-- Форма игры (появляется после поиска) -->
         <div id="gameForm" style="display: none;">
@@ -254,7 +261,51 @@ async function findGame() {
             navigator.clipboard.writeText(json);
             alert('JSON скопирован! Теперь вставь его в файл games.json');
         }
+
+        // ========== РУЧНОЙ ВВОД ==========
+function manualInput() {
+    const steamId = document.getElementById('steamId').value || 'manual';
+    
+    // Просим ввести данные
+    const name = prompt('🎮 Введите название игры:', 'S.T.A.L.K.E.R. 2');
+    if (!name) return;
+    
+    const description = prompt('📝 Введите описание игры (можно скопировать из Steam):', 'Долгожданное продолжение культовой серии...');
+    if (!description) return;
+    
+    const image = prompt('🖼️ Вставьте ссылку на изображение (из Steam):', 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2825530/header.jpg');
+    
+    const price = prompt('💰 Цена:', '1999₽');
+    
+    // Создаем объект игры
+    currentGame = {
+        steam_id: steamId,
+        name: name,
+        description: description,
+        header_image: image || 'https://via.placeholder.com/460x215',
+        price: price || 'Бесплатно',
+        download_link: '',
+        added: new Date().toISOString()
+    };
+    
+    // Заполняем форму
+    document.getElementById('previewImage').src = currentGame.header_image;
+    document.getElementById('previewName').textContent = currentGame.name;
+    document.getElementById('previewPrice').textContent = currentGame.price;
+    document.getElementById('gameName').value = currentGame.name;
+    document.getElementById('gameSteamId').value = currentGame.steam_id;
+    document.getElementById('gameDescription').value = currentGame.description;
+    document.getElementById('gamePrice').value = currentGame.price;
+    
+    // Показываем форму
+    document.getElementById('gameForm').style.display = 'block';
+    
+    // Прячем загрузку
+    document.getElementById('loading').style.display = 'none';
+}
+        
     </script>
 </body>
 </html>
+
 
