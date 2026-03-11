@@ -1,0 +1,399 @@
+/* style.css - МИНИМАЛИЗМ */
+
+/* БАЗОВЫЙ СБРОС */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: #ffffff;
+    color: #000000;
+    line-height: 1.5;
+    font-weight: 400;
+}
+
+/* ТИПОГРАФИКА */
+h1, h2, h3, h4 {
+    font-weight: 500;
+    letter-spacing: -0.02em;
+}
+
+/* НАВИГАЦИЯ */
+.nav-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #eee;
+    background: white;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: #666;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+.nav-links a:hover {
+    color: #000;
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.username {
+    color: #000;
+    font-size: 0.9rem;
+}
+
+.admin-link {
+    color: #000 !important;
+    font-weight: 500;
+    text-decoration: none;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #000;
+}
+
+.login-link {
+    color: #000 !important;
+    text-decoration: none;
+    font-size: 0.9rem;
+    border: 1px solid #000;
+    padding: 0.5rem 1rem;
+}
+
+.logout-btn {
+    color: #999;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.logout-btn:hover {
+    color: #000;
+}
+
+/* ХЕДЕР */
+header {
+    padding: 4rem 2rem 2rem;
+    text-align: center;
+    background: white;
+}
+
+.header-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: #999;
+    font-size: 0.9rem;
+    font-weight: 400;
+}
+
+/* ОСНОВНОЙ КОНТЕЙНЕР */
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+/* СЕТКА ИГР */
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+/* КАРТОЧКА ИГРЫ */
+.game-card {
+    background: white;
+    border: 1px solid #eee;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.game-card:hover {
+    border-color: #000;
+}
+
+.game-header-img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    display: block;
+    border-bottom: 1px solid #eee;
+}
+
+.game-info {
+    padding: 1.5rem;
+}
+
+.game-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+}
+
+.game-description {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+.game-price {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #000;
+}
+
+/* КНОПКА ПРЕДЛОЖИТЬ */
+.suggest-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: #000;
+    color: white;
+    padding: 1rem 2rem;
+    text-decoration: none;
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    z-index: 100;
+}
+
+.suggest-btn:hover {
+    opacity: 0.8;
+}
+
+/* ФУТЕР */
+footer {
+    border-top: 1px solid #eee;
+    padding: 2rem;
+    text-align: center;
+    color: #999;
+    font-size: 0.8rem;
+    margin-top: 3rem;
+}
+
+/* СОСТОЯНИЯ ЗАГРУЗКИ */
+.loading, .error {
+    text-align: center;
+    padding: 4rem;
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.error {
+    color: #ff0000;
+}
+
+/* ФОРМЫ */
+.auth-form {
+    max-width: 360px;
+    margin: 0 auto;
+    background: white;
+    border: 1px solid #eee;
+    padding: 2rem;
+}
+
+.auth-form h2 {
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    font-size: 1.2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #666;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    background: white;
+    border: 1px solid #ddd;
+    color: #000;
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #000;
+}
+
+.btn {
+    display: inline-block;
+    background: white;
+    color: #000;
+    border: 1px solid #000;
+    padding: 0.8rem 1.5rem;
+    cursor: pointer;
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn:hover {
+    background: #000;
+    color: white;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+/* МОДАЛЬНОЕ ОКНО */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.95);
+    z-index: 1000;
+}
+
+.modal.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    border: 1px solid #eee;
+    padding: 2rem;
+    max-width: 400px;
+    width: 90%;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: #999;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.modal-close:hover {
+    color: #000;
+}
+
+/* ОТЗЫВЫ */
+.reviews-section {
+    margin-top: 3rem;
+    border-top: 1px solid #eee;
+    padding-top: 2rem;
+}
+
+.review {
+    border-bottom: 1px solid #eee;
+    padding: 1.5rem 0;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.review-author {
+    color: #000;
+    font-weight: 500;
+}
+
+.review-rating {
+    color: #000;
+}
+
+.review-text {
+    color: #333;
+    line-height: 1.6;
+    font-size: 0.9rem;
+}
+
+.review-form {
+    background: #fafafa;
+    border: 1px solid #eee;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.rating-select {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.rating-select label {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: #666;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+/* АДАПТИВНОСТЬ */
+@media (max-width: 768px) {
+    .nav-bar {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    .games-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .suggest-btn {
+        bottom: 1rem;
+        right: 1rem;
+        padding: 0.8rem 1.5rem;
+    }
+}

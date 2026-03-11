@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAME VAULT / ADMIN</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-links">
+            <a href="index.html">Главная</a>
+        </div>
+        <div class="user-menu" id="userMenu"></div>
+    </nav>
+
+    <main>
+        <h1 style="margin-bottom: 2rem;">ПАНЕЛЬ УПРАВЛЕНИЯ</h1>
+        
+        <!-- Вкладки -->
+        <div class="admin-tabs">
+            <div class="admin-tab active" onclick="switchTab('games')">ИГРЫ</div>
+            <div class="admin-tab" onclick="switchTab('suggestions')">ПРЕДЛОЖЕНИЯ</div>
+            <div class="admin-tab" onclick="switchTab('users')">ПОЛЬЗОВАТЕЛИ</div>
+        </div>
+        
+        <!-- Секция игр -->
+        <div class="admin-section active" id="gamesSection">
+            <h2 style="margin-bottom: 1.5rem;">ДОБАВИТЬ ИГРУ</h2>
+            
+            <div style="max-width: 600px;">
+                <div class="form-group">
+                    <label>Steam ID</label>
+                    <input type="text" id="steamId" placeholder="730">
+                </div>
+                
+                <button class="btn" onclick="fetchFromSteam()">ЗАГРУЗИТЬ ИЗ STEAM</button>
+                
+                <div id="gameForm" style="margin-top: 2rem; display: none;">
+                    <div class="form-group">
+                        <label>Название</label>
+                        <input type="text" id="gameName">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Описание</label>
+                        <textarea id="gameDescription" rows="4"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>URL изображения</label>
+                        <input type="text" id="gameImage">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Цена</label>
+                        <input type="text" id="gamePrice" value="Бесплатно">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Ссылка на скачивание</label>
+                        <input type="text" id="downloadLink">
+                    </div>
+                    
+                    <button class="btn btn-block" onclick="addGame()">ДОБАВИТЬ ИГРУ</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Секция предложений -->
+        <div class="admin-section" id="suggestionsSection">
+            <h2 style="margin-bottom: 1.5rem;">ПРЕДЛОЖЕННЫЕ ИГРЫ</h2>
+            <div id="suggestionsList"></div>
+        </div>
+        
+        <!-- Секция пользователей -->
+        <div class="admin-section" id="usersSection">
+            <h2 style="margin-bottom: 1.5rem;">ПОЛЬЗОВАТЕЛИ</h2>
+            <div id="usersList"></div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

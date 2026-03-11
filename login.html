@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAME VAULT / ВХОД</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-links">
+            <a href="index.html">ИГРЫ</a>
+        </div>
+    </nav>
+
+    <main style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
+        <div class="auth-form">
+            <h2>ВХОД</h2>
+            
+            <div style="display: flex; gap: 1px; margin-bottom: 2rem; background: #eee;">
+                <button class="btn" style="flex: 1; background: #000; color: white; border: none;" onclick="showLogin()">ВХОД</button>
+                <button class="btn" style="flex: 1; background: white; color: #000;" onclick="window.location.href='register.html'">РЕГИСТРАЦИЯ</button>
+            </div>
+            
+            <div id="loginForm">
+                <div class="form-group">
+                    <label>НИКНЕЙМ</label>
+                    <input type="text" id="loginUsername" placeholder="9nge">
+                </div>
+                
+                <div class="form-group">
+                    <label>ПАРОЛЬ</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••">
+                </div>
+                
+                <button class="btn btn-block" onclick="login()">ВОЙТИ</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

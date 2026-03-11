@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAME VAULT</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-links">
+            <a href="index.html">ИГРЫ</a>
+            <a href="#" id="suggestLink">ПРЕДЛОЖИТЬ</a>
+        </div>
+        <div class="user-menu" id="userMenu">
+            <!-- JS подставит сюда -->
+        </div>
+    </nav>
+
+    <header>
+        <div class="header-content">
+            <h1>GAME VAULT</h1>
+            <p class="subtitle">архив игр</p>
+        </div>
+    </header>
+
+    <main>
+        <div class="games-grid" id="gamesGrid">
+            <div class="loading">ЗАГРУЗКА...</div>
+        </div>
+    </main>
+
+    <button class="suggest-btn" id="suggestBtn">+ ПРЕДЛОЖИТЬ ИГРУ</button>
+
+    <div class="modal" id="suggestModal">
+        <div class="modal-content">
+            <span class="modal-close" id="closeModal">×</span>
+            <h2 style="margin-bottom: 1.5rem;">ПРЕДЛОЖИТЬ ИГРУ</h2>
+            
+            <div class="form-group">
+                <label>НАЗВАНИЕ ИГРЫ</label>
+                <input type="text" id="suggestGameInput" placeholder="например: Counter-Strike 2">
+            </div>
+            
+            <div class="form-group">
+                <label>КОММЕНТАРИЙ</label>
+                <textarea id="suggestComment" rows="3" placeholder="почему стоит добавить..."></textarea>
+            </div>
+            
+            <button class="btn btn-block" onclick="submitSuggestion()">ОТПРАВИТЬ</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>GAME VAULT / 2024</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
