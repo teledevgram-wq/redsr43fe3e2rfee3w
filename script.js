@@ -1,96 +1,36 @@
-// script.js - ИСПРАВЛЕННАЯ ВЕРСИЯ
+// script.js - ТОЛЬКО ДЛЯ ГЛАВНОЙ СТРАНИЦЫ
 
-// Конфигурация
-const GAMES_JSON = 'games.json';
-const USERS_JSON = 'users.json';
-const REVIEWS_JSON = 'reviews.json';
-const SUGGESTIONS_JSON = 'suggestions.json';
-
-// Ваши данные для входа
-const ADMIN_USERNAME = '9nge';
-const ADMIN_PASSWORD = '56809gghh123';
-
-// Инициализация
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Сайт загружен');
-    checkAuth();
-    updateUserMenu();
-    
-    // Загружаем игры на главной
-    if (document.getElementById('gamesGrid')) {
-        loadGames();
-    }
+    console.log('Страница загружена');
+    loadGames();
 });
-
-// ========== АВТОРИЗАЦИЯ ==========
-
-function checkAuth() {
-    const user = localStorage.getItem('currentUser');
-    if (user) {
-        const userData = JSON.parse(user);
-        console.log('Текущий пользователь:', userData);
-        return userData;
-    }
-    return null;
-}
-
-function updateUserMenu() {
-    const menu = document.getElementById('userMenu');
-    if (!menu) return;
-    
-    const user = checkAuth();
-    console.log('Обновление меню, пользователь:', user);
-    
-    if (user) {
-        // Проверяем, админ ли это (строгое сравнение)
-        const isAdmin = (user.username === ADMIN_USERNAME && user.password === ADMIN_PASSWORD);
-        console.log('Это админ?', isAdmin);
-        
-        let menuHTML = `<span class="username">${user.username}</span>`;
-        
-        // Только если реально админ - показываем кнопку admin
-        if (isAdmin) {
-            menuHTML += `<a href="admin.html" class="admin-link">ADMIN</a>`;
-        }
-        
-        menuHTML += `<span class="logout-btn" onclick="logout()">ВЫЙТИ</span>`;
-        menu.innerHTML = menuHTML;
-    } else {
-        menu.innerHTML = `<a href="login.html" class="login-link">ВОЙТИ</a>`;
-    }
-}
-
-function logout() {
-    localStorage.removeItem('currentUser');
-    window.location.href = 'index.html';
-}
-
-// ========== ЗАГРУЗКА ИГР ==========
-
-// Добавьте в script.js
 
 async function loadGames() {
     const grid = document.getElementById('gamesGrid');
-    if (!grid) return;
+    if (!grid) {
+        console.error('Нет элемента gamesGrid');
+        return;
+    }
     
     try {
-        // Пробуем загрузить из GitHub Pages (games.json в репозитории)
+        console.log('Загружаем games.json...');
+        
+        // Добавляем параметр чтобы не кэшировалось
         const response = await fetch('games.json?t=' + Date.now());
         
         if (!response.ok) {
-            throw new Error('Не удалось загрузить');
+            throw new Error('HTTP error! status: ' + response.status);
         }
         
         const games = await response.json();
+        console.log('Загружено игр:', games.length);
         
         if (!games || games.length === 0) {
-            grid.innerHTML = '<div class="loading">ИГР ПОКА НЕТ</div>';
+            grid.innerHTML = '<div class="loading">⚠️ ИГР ПОКА НЕТ</div>';
             return;
         }
         
-        // Сортируем по дате добавления
-        games.sort((a, b) => new Date(b.added || 0) - new Date(a.added || 0));
-        
+        // Отображаем игры
         grid.innerHTML = games.map(game => `
             <div class="game-card" onclick="window.location.href='game.html?id=${game.steam_id}'">
                 <img src="${game.header_image || 'https://via.placeholder.com/460x215/333/666?text=NO+IMAGE'}" 
@@ -108,7 +48,6 @@ async function loadGames() {
         
     } catch (error) {
         console.error('Ошибка загрузки:', error);
-        grid.innerHTML = '<div class="error">⚠️ ОШИБКА ЗАГРУЗКИ</div>';
+        grid.innerHTML = '<div class="error">⚠️ ОШИБКА ЗАГРУЗКИ: ' + error.message + '</div>';
     }
 }
-
