@@ -213,7 +213,7 @@
                 
                 <!-- Блок скачивания -->
                 <div class="download-section">
-                    <h2 style="margin-bottom: 1rem;">⬇️ СКАЧАТЬ ИГРУ</h2>
+                    <h2 style="margin-bottom: 1rem;">СКАЧАТЬ ИГРУ</h2>
                     ${game.download_link ? 
                         `<a href="${game.download_link}" class="download-btn" target="_blank">СКАЧАТЬ</a>` : 
                         '<p style="color: #999;">ССЫЛКА ПОЯВИТСЯ ПОЗЖЕ</p>'}
@@ -222,8 +222,6 @@
                 <!-- Табы -->
                 <div class="tabs">
                     <button class="tab active" onclick="showTab('description')">ОПИСАНИЕ</button>
-                    <button class="tab" onclick="showTab('tutorial')">КАК УСТАНОВИТЬ</button>
-                    <button class="tab" onclick="showTab('screenshots')">СКРИНШОТЫ</button>
                 </div>
                 
                 <!-- Контент табов -->
@@ -242,59 +240,6 @@
                         <p style="line-height: 1.6;">${game.description}</p>
                     `;
                     
-                case 'tutorial':
-                    return `
-                        <h3 style="margin-bottom: 1.5rem;">🔧 КАК УСТАНОВИТЬ ИГРУ</h3>
-                        
-                        <div class="tutorial-step">
-                            <span class="step-number">1</span>
-                            <strong>СКАЧАЙ АРХИВ</strong>
-                            <p style="margin-top: 0.5rem; color: #666;">Нажми кнопку "СКАЧАТЬ" выше. Файл может быть большим (10-50 ГБ).</p>
-                        </div>
-                        
-                        <div class="tutorial-step">
-                            <span class="step-number">2</span>
-                            <strong>РАСПАКУЙ АРХИВ</strong>
-                            <p style="margin-top: 0.5rem; color: #666;">Используй WinRAR или 7-Zip. Пароль: <strong>gamevault</strong> (если требуется)</p>
-                        </div>
-                        
-                        <div class="tutorial-step">
-                            <span class="step-number">3</span>
-                            <strong>ЗАПУСТИ ИГРУ</strong>
-                            <p style="margin-top: 0.5rem; color: #666;">Найди файл .exe в папке с игрой и запусти от имени администратора.</p>
-                        </div>
-                        
-                        <div class="requirements">
-                            <h4 style="margin-bottom: 1rem;">⚠️ СИСТЕМНЫЕ ТРЕБОВАНИЯ</h4>
-                            <p>ОС: Windows 10/11</p>
-                            <p>Процессор: Intel Core i5 / AMD Ryzen 5</p>
-                            <p>Оперативная память: 8-16 ГБ</p>
-                            <p>Видеокарта: NVIDIA GeForce GTX 1060 / AMD Radeon RX 580</p>
-                            <p>Место на диске: 50+ ГБ</p>
-                        </div>
-                        
-                        <p style="color: #ff4444; margin-top: 1rem;">❗ Если игра не запускается, попробуй:</p>
-                        <ul style="margin-left: 2rem; color: #666;">
-                            <li>Отключить антивирус</li>
-                            <li>Установить DirectX и Visual C++</li>
-                            <li>Запустить от администратора</li>
-                        </ul>
-                    `;
-                    
-                case 'screenshots':
-                    return `
-                        <h3 style="margin-bottom: 1rem;">СКРИНШОТЫ</h3>
-                        <div class="screenshots">
-                            ${[1,2,3,4].map(i => 
-                                `<img src="${game.header_image}" onclick="window.open(this.src)">`
-                            ).join('')}
-                        </div>
-                    `;
-                    
-                default:
-                    return '';
-            }
-        }
         
         // Переключение табов
         function showTab(tab) {
@@ -316,3 +261,4 @@
     </script>
 </body>
 </html>
+
