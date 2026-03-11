@@ -67,29 +67,29 @@ function logout() {
 
 // ========== ЗАГРУЗКА ИГР ==========
 
-// Добавьте в script.js функцию загрузки игр из localStorage
+// Добавьте в script.js
 
 async function loadGames() {
     const grid = document.getElementById('gamesGrid');
     if (!grid) return;
     
     try {
-        // Сначала пробуем загрузить из localStorage (для теста)
-        let games = [];
-        const savedGames = localStorage.getItem('games');
+        // Пробуем загрузить из GitHub Pages (games.json в репозитории)
+        const response = await fetch('games.json?t=' + Date.now());
         
-        if (savedGames) {
-            games = JSON.parse(savedGames);
-        } else {
-            // Если нет, загружаем из JSON
-            const response = await fetch('games.json?t=' + Date.now());
-            games = await response.json();
+        if (!response.ok) {
+            throw new Error('Не удалось загрузить');
         }
+        
+        const games = await response.json();
         
         if (!games || games.length === 0) {
             grid.innerHTML = '<div class="loading">ИГР ПОКА НЕТ</div>';
             return;
         }
+        
+        // Сортируем по дате добавления
+        games.sort((a, b) => new Date(b.added || 0) - new Date(a.added || 0));
         
         grid.innerHTML = games.map(game => `
             <div class="game-card" onclick="window.location.href='game.html?id=${game.steam_id}'">
@@ -107,8 +107,8 @@ async function loadGames() {
         `).join('');
         
     } catch (error) {
-        console.error('Ошибка загрузки игр:', error);
+        console.error('Ошибка загрузки:', error);
         grid.innerHTML = '<div class="error">⚠️ ОШИБКА ЗАГРУЗКИ</div>';
     }
-
 }
+
