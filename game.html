@@ -3,53 +3,316 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAME VAULT / игра</title>
+    <title>GAME VAULT / ИГРА</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .game-page {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .game-header {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            background: #f5f5f5;
+            padding: 2rem;
+        }
+        
+        .game-cover {
+            width: 100%;
+            height: auto;
+        }
+        
+        .game-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .game-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #000;
+        }
+        
+        .download-section {
+            background: white;
+            border: 2px solid #000;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            background: #000;
+            color: white;
+            padding: 1rem 3rem;
+            text-decoration: none;
+            font-size: 1.2rem;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .download-btn:hover {
+            opacity: 0.8;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 1px;
+            background: #ddd;
+            margin: 2rem 0;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 1rem;
+            background: #f5f5f5;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .tab.active {
+            background: #000;
+            color: white;
+        }
+        
+        .tab-content {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 2rem;
+            min-height: 200px;
+        }
+        
+        .screenshots {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .screenshots img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+        
+        .tutorial-step {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #000;
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 50%;
+            margin-right: 1rem;
+        }
+        
+        .requirements {
+            background: #f5f5f5;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: #666;
+            text-decoration: none;
+        }
+        
+        .back-btn:hover {
+            color: #000;
+        }
+    </style>
 </head>
 <body>
     <nav class="nav-bar">
         <div class="nav-links">
-            <a href="index.html">Главная</a>
-            <a href="#" id="suggestLink">Предложить игру</a>
+            <a href="index.html">ИГРЫ</a>
         </div>
         <div class="user-menu" id="userMenu"></div>
     </nav>
 
-    <main>
-        <div id="gameContainer"></div>
+    <main class="game-page">
+        <a href="index.html" class="back-btn">← НАЗАД К ИГРАМ</a>
         
-        <!-- Секция отзывов -->
-        <div class="reviews-section" id="reviewsSection">
-            <h2 style="margin-bottom: 2rem;">ОТЗЫВЫ</h2>
-            
-            <!-- Форма добавления отзыва (для авторизованных) -->
-            <div id="reviewFormContainer" style="display: none;"></div>
-            
-            <!-- Список отзывов -->
-            <div id="reviewsList"></div>
+        <div id="gameContent">
+            <!-- Загрузка -->
+            <div class="loading">ЗАГРУЗКА...</div>
         </div>
     </main>
 
-    <!-- Модальное окно предложения игры -->
-    <div class="modal" id="suggestModal">
-        <div class="modal-content">
-            <span class="modal-close" id="closeModal">&times;</span>
-            <h2 style="margin-bottom: 1.5rem;">ПРЕДЛОЖИТЬ ИГРУ</h2>
-            
-            <div class="form-group">
-                <label>Steam ID или название игры</label>
-                <input type="text" id="suggestGameInput" placeholder="например: 730 или Counter-Strike 2">
-            </div>
-            
-            <div class="form-group">
-                <label>Комментарий</label>
-                <textarea id="suggestComment" rows="4"></textarea>
-            </div>
-            
-            <button class="btn btn-block" onclick="submitSuggestion()">ОТПРАВИТЬ</button>
-        </div>
-    </div>
+    <script src="auth.js"></script>
+    <script>
+        // Получаем ID игры из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const gameId = urlParams.get('id');
+        
+        if (!gameId) {
+            window.location.href = 'index.html';
+        }
 
-    <script src="script.js"></script>
+        // Загружаем игру
+        async function loadGame() {
+            try {
+                const response = await fetch('games.json?t=' + Date.now());
+                const games = await response.json();
+                
+                const game = games.find(g => g.steam_id == gameId);
+                
+                if (!game) {
+                    document.getElementById('gameContent').innerHTML = '<div class="error">ИГРА НЕ НАЙДЕНА</div>';
+                    return;
+                }
+                
+                displayGame(game);
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                document.getElementById('gameContent').innerHTML = '<div class="error">ОШИБКА ЗАГРУЗКИ</div>';
+            }
+        }
+        
+        // Отображаем игру
+        function displayGame(game) {
+            const content = document.getElementById('gameContent');
+            
+            // Скриншоты (если есть)
+            const screenshots = game.screenshots || [
+                game.header_image,
+                game.header_image,
+                game.header_image,
+                game.header_image
+            ];
+            
+            content.innerHTML = `
+                <!-- Шапка игры -->
+                <div class="game-header">
+                    <img src="${game.header_image}" alt="${game.name}" class="game-cover">
+                    <div>
+                        <h1 class="game-title">${game.name}</h1>
+                        <div class="game-price">💰 ${game.price}</div>
+                        <p style="color: #666;">Steam ID: ${game.steam_id}</p>
+                    </div>
+                </div>
+                
+                <!-- Блок скачивания -->
+                <div class="download-section">
+                    <h2 style="margin-bottom: 1rem;">⬇️ СКАЧАТЬ ИГРУ</h2>
+                    ${game.download_link ? 
+                        `<a href="${game.download_link}" class="download-btn" target="_blank">СКАЧАТЬ</a>` : 
+                        '<p style="color: #999;">ССЫЛКА ПОЯВИТСЯ ПОЗЖЕ</p>'}
+                </div>
+                
+                <!-- Табы -->
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('description')">ОПИСАНИЕ</button>
+                    <button class="tab" onclick="showTab('tutorial')">КАК УСТАНОВИТЬ</button>
+                    <button class="tab" onclick="showTab('screenshots')">СКРИНШОТЫ</button>
+                </div>
+                
+                <!-- Контент табов -->
+                <div id="tabContent" class="tab-content">
+                    ${getTabContent('description', game)}
+                </div>
+            `;
+        }
+        
+        // Контент для табов
+        function getTabContent(tab, game) {
+            switch(tab) {
+                case 'description':
+                    return `
+                        <h3 style="margin-bottom: 1rem;">ОПИСАНИЕ</h3>
+                        <p style="line-height: 1.6;">${game.description}</p>
+                    `;
+                    
+                case 'tutorial':
+                    return `
+                        <h3 style="margin-bottom: 1.5rem;">🔧 КАК УСТАНОВИТЬ ИГРУ</h3>
+                        
+                        <div class="tutorial-step">
+                            <span class="step-number">1</span>
+                            <strong>СКАЧАЙ АРХИВ</strong>
+                            <p style="margin-top: 0.5rem; color: #666;">Нажми кнопку "СКАЧАТЬ" выше. Файл может быть большим (10-50 ГБ).</p>
+                        </div>
+                        
+                        <div class="tutorial-step">
+                            <span class="step-number">2</span>
+                            <strong>РАСПАКУЙ АРХИВ</strong>
+                            <p style="margin-top: 0.5rem; color: #666;">Используй WinRAR или 7-Zip. Пароль: <strong>gamevault</strong> (если требуется)</p>
+                        </div>
+                        
+                        <div class="tutorial-step">
+                            <span class="step-number">3</span>
+                            <strong>ЗАПУСТИ ИГРУ</strong>
+                            <p style="margin-top: 0.5rem; color: #666;">Найди файл .exe в папке с игрой и запусти от имени администратора.</p>
+                        </div>
+                        
+                        <div class="requirements">
+                            <h4 style="margin-bottom: 1rem;">⚠️ СИСТЕМНЫЕ ТРЕБОВАНИЯ</h4>
+                            <p>ОС: Windows 10/11</p>
+                            <p>Процессор: Intel Core i5 / AMD Ryzen 5</p>
+                            <p>Оперативная память: 8-16 ГБ</p>
+                            <p>Видеокарта: NVIDIA GeForce GTX 1060 / AMD Radeon RX 580</p>
+                            <p>Место на диске: 50+ ГБ</p>
+                        </div>
+                        
+                        <p style="color: #ff4444; margin-top: 1rem;">❗ Если игра не запускается, попробуй:</p>
+                        <ul style="margin-left: 2rem; color: #666;">
+                            <li>Отключить антивирус</li>
+                            <li>Установить DirectX и Visual C++</li>
+                            <li>Запустить от администратора</li>
+                        </ul>
+                    `;
+                    
+                case 'screenshots':
+                    return `
+                        <h3 style="margin-bottom: 1rem;">СКРИНШОТЫ</h3>
+                        <div class="screenshots">
+                            ${[1,2,3,4].map(i => 
+                                `<img src="${game.header_image}" onclick="window.open(this.src)">`
+                            ).join('')}
+                        </div>
+                    `;
+                    
+                default:
+                    return '';
+            }
+        }
+        
+        // Переключение табов
+        function showTab(tab) {
+            // Обновляем классы табов
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Получаем игру
+            fetch('games.json?t=' + Date.now())
+                .then(r => r.json())
+                .then(games => {
+                    const game = games.find(g => g.steam_id == gameId);
+                    document.getElementById('tabContent').innerHTML = getTabContent(tab, game);
+                });
+        }
+        
+        // Загружаем игру при старте
+        loadGame();
+    </script>
 </body>
 </html>
