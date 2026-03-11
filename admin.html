@@ -3,83 +3,584 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAME VAULT / ADMIN</title>
+    <title>GAME VAULT / АДМИНКА</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Дополнительные стили для админки */
+        .admin-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .steam-search {
+            background: #f5f5f5;
+            border: 1px solid #eee;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .game-preview {
+            background: white;
+            border: 1px solid #eee;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .preview-header {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .preview-header img {
+            width: 200px;
+            height: auto;
+        }
+        
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .screenshots-grid img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+        
+        .form-row label {
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .form-row input,
+        .form-row textarea,
+        .form-row select {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            font-family: inherit;
+        }
+        
+        .games-list {
+            margin-top: 3rem;
+        }
+        
+        .game-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .game-item:hover {
+            background: #f9f9f9;
+        }
+        
+        .game-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .game-info img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+        
+        .delete-btn {
+            color: #ff4444;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        
+        .delete-btn:hover {
+            color: #ff0000;
+        }
+        
+        .success-message {
+            background: #00ff00;
+            color: #000;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .error-message {
+            background: #ff4444;
+            color: #fff;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: #f5f5f5;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+    </style>
 </head>
 <body>
     <nav class="nav-bar">
         <div class="nav-links">
-            <a href="index.html">Главная</a>
+            <a href="index.html">ИГРЫ</a>
+            <a href="#" id="suggestLink">ПРЕДЛОЖИТЬ</a>
         </div>
         <div class="user-menu" id="userMenu"></div>
     </nav>
 
     <main>
-        <h1 style="margin-bottom: 2rem;">ПАНЕЛЬ УПРАВЛЕНИЯ</h1>
-        
-        <!-- Вкладки -->
-        <div class="admin-tabs">
-            <div class="admin-tab active" onclick="switchTab('games')">ИГРЫ</div>
-            <div class="admin-tab" onclick="switchTab('suggestions')">ПРЕДЛОЖЕНИЯ</div>
-            <div class="admin-tab" onclick="switchTab('users')">ПОЛЬЗОВАТЕЛИ</div>
-        </div>
-        
-        <!-- Секция игр -->
-        <div class="admin-section active" id="gamesSection">
-            <h2 style="margin-bottom: 1.5rem;">ДОБАВИТЬ ИГРУ</h2>
+        <div class="admin-container">
+            <h1 style="margin-bottom: 2rem;">ПАНЕЛЬ УПРАВЛЕНИЯ</h1>
             
-            <div style="max-width: 600px;">
-                <div class="form-group">
-                    <label>Steam ID</label>
-                    <input type="text" id="steamId" placeholder="730">
+            <!-- Статистика -->
+            <div class="stats" id="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalGames">0</div>
+                    <div class="stat-label">ВСЕГО ИГР</div>
                 </div>
-                
-                <button class="btn" onclick="fetchFromSteam()">ЗАГРУЗИТЬ ИЗ STEAM</button>
-                
-                <div id="gameForm" style="margin-top: 2rem; display: none;">
-                    <div class="form-group">
-                        <label>Название</label>
-                        <input type="text" id="gameName">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Описание</label>
-                        <textarea id="gameDescription" rows="4"></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>URL изображения</label>
-                        <input type="text" id="gameImage">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Цена</label>
-                        <input type="text" id="gamePrice" value="Бесплатно">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Ссылка на скачивание</label>
-                        <input type="text" id="downloadLink">
-                    </div>
-                    
-                    <button class="btn btn-block" onclick="addGame()">ДОБАВИТЬ ИГРУ</button>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalDownloads">0</div>
+                    <div class="stat-label">ССЫЛОК ДЛЯ СКАЧИВАНИЯ</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalSuggestions">0</div>
+                    <div class="stat-label">ПРЕДЛОЖЕНИЙ</div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Секция предложений -->
-        <div class="admin-section" id="suggestionsSection">
-            <h2 style="margin-bottom: 1.5rem;">ПРЕДЛОЖЕННЫЕ ИГРЫ</h2>
-            <div id="suggestionsList"></div>
-        </div>
-        
-        <!-- Секция пользователей -->
-        <div class="admin-section" id="usersSection">
-            <h2 style="margin-bottom: 1.5rem;">ПОЛЬЗОВАТЕЛИ</h2>
-            <div id="usersList"></div>
+            
+            <!-- Сообщения -->
+            <div class="success-message" id="successMessage"></div>
+            <div class="error-message" id="errorMessage"></div>
+            
+            <!-- Поиск игры в Steam -->
+            <div class="steam-search">
+                <h2 style="margin-bottom: 1.5rem;">🔍 НАЙТИ ИГРУ В STEAM</h2>
+                
+                <div class="form-row">
+                    <label>STEAM ID:</label>
+                    <input type="text" id="steamId" placeholder="Например: 730 (Counter-Strike 2) или 570 (Dota 2)">
+                </div>
+                
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn" onclick="searchSteamGame()">НАЙТИ В STEAM</button>
+                    <button class="btn" onclick="clearForm()">ОЧИСТИТЬ</button>
+                </div>
+                
+                <!-- Загрузка -->
+                <div class="loading-spinner" id="loading">
+                    ПОИСК ИГРЫ...
+                </div>
+            </div>
+            
+            <!-- Форма добавления игры -->
+            <div id="gameForm" style="display: none;">
+                <h2 style="margin-bottom: 1.5rem;">📝 РЕДАКТИРОВАНИЕ ИГРЫ</h2>
+                
+                <!-- Превью игры -->
+                <div class="game-preview">
+                    <div class="preview-header">
+                        <img id="previewImage" src="" alt="Preview">
+                        <div>
+                            <h3 id="previewName"></h3>
+                            <p id="previewPrice" style="color: #666; margin-top: 0.5rem;"></p>
+                        </div>
+                    </div>
+                    
+                    <!-- Скриншоты -->
+                    <div class="screenshots-grid" id="screenshotsGrid"></div>
+                    
+                    <!-- Форма -->
+                    <div class="form-row">
+                        <label>НАЗВАНИЕ ИГРЫ:</label>
+                        <input type="text" id="gameName" readonly>
+                    </div>
+                    
+                    <div class="form-row">
+                        <label>STEAM ID:</label>
+                        <input type="text" id="gameSteamId" readonly>
+                    </div>
+                    
+                    <div class="form-row">
+                        <label>ОПИСАНИЕ:</label>
+                        <textarea id="gameDescription" rows="4" readonly></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <label>ЦЕНА В STEAM:</label>
+                        <input type="text" id="gamePrice" readonly>
+                    </div>
+                    
+                    <div class="form-row">
+                        <label>ССЫЛКА НА СКАЧИВАНИЕ:</label>
+                        <input type="url" id="downloadLink" placeholder="https://cloud.mail.ru/public/... или https://mega.nz/...">
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                        <button class="btn" onclick="saveGame()">💾 СОХРАНИТЬ ИГРУ</button>
+                        <button class="btn" onclick="previewGame()">👁️ ПРЕДПРОСМОТР</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Список всех игр -->
+            <div class="games-list">
+                <h2 style="margin-bottom: 1.5rem;">📋 ВСЕ ИГРЫ НА САЙТЕ</h2>
+                <div id="gamesList"></div>
+            </div>
+            
+            <!-- Предложения игр -->
+            <div class="games-list" style="margin-top: 3rem;">
+                <h2 style="margin-bottom: 1.5rem;">💡 ПРЕДЛОЖЕННЫЕ ИГРЫ</h2>
+                <div id="suggestionsList"></div>
+            </div>
         </div>
     </main>
 
-    <script src="script.js"></script>
+    <!-- Модальное окно предпросмотра -->
+    <div class="modal" id="previewModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="modal-close" onclick="closePreview()">&times;</span>
+            <div id="previewContent"></div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
+        let currentGameData = null;
+        let games = [];
+        
+        // ========== ПРОВЕРКА АДМИНА ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = checkAuth();
+            if (!user || user.username !== '9nge' || user.password !== '56809gghh123') {
+                alert('Доступ запрещен! Только для администратора.');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            loadGames();
+            loadSuggestions();
+            updateStats();
+        });
+        
+        // ========== ЗАГРУЗКА ДАННЫХ ==========
+        async function loadGames() {
+            try {
+                const response = await fetch('games.json?t=' + Date.now());
+                games = await response.json();
+                displayGames();
+                updateStats();
+            } catch (error) {
+                console.log('Нет сохраненных игр');
+                games = [];
+            }
+        }
+        
+        function displayGames() {
+            const list = document.getElementById('gamesList');
+            if (games.length === 0) {
+                list.innerHTML = '<p style="color: #666;">Игр пока нет</p>';
+                return;
+            }
+            
+            list.innerHTML = games.map(game => `
+                <div class="game-item">
+                    <div class="game-info" onclick="editGame('${game.steam_id}')">
+                        <img src="${game.header_image || 'https://via.placeholder.com/50'}" alt="">
+                        <div>
+                            <div style="font-weight: 500;">${game.name}</div>
+                            <div style="color: #666; font-size: 0.8rem;">ID: ${game.steam_id}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        ${game.download_link ? 
+                            '<span style="color: #00aa00;">✅ Есть ссылка</span>' : 
+                            '<span style="color: #999;">⏳ Нет ссылки</span>'}
+                        <span class="delete-btn" onclick="deleteGame('${game.steam_id}')">✕</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // ========== ПОИСК В STEAM ==========
+        async function searchSteamGame() {
+            const steamId = document.getElementById('steamId').value.trim();
+            
+            if (!steamId) {
+                showError('Введите Steam ID');
+                return;
+            }
+            
+            showLoading(true);
+            
+            try {
+                // Используем CORS прокси для доступа к Steam API
+                const proxyUrl = 'https://api.allorigins.win/get?url=';
+                const steamUrl = `https://store.steampowered.com/api/appdetails?appids=${steamId}&l=russian`;
+                
+                const response = await fetch(proxyUrl + encodeURIComponent(steamUrl));
+                const data = await response.json();
+                const gameData = JSON.parse(data.contents);
+                
+                if (!gameData[steamId]?.success) {
+                    showError('Игра не найдена в Steam');
+                    showLoading(false);
+                    return;
+                }
+                
+                const game = gameData[steamId].data;
+                
+                // Заполняем форму
+                currentGameData = {
+                    steam_id: steamId,
+                    name: game.name || 'Без названия',
+                    description: game.short_description || 'Описание отсутствует',
+                    header_image: game.header_image || '',
+                    screenshots: game.screenshots?.map(s => s.path_full) || [],
+                    price: game.price_overview?.final_formatted || 'Бесплатно',
+                    download_link: '',
+                    added: new Date().toISOString()
+                };
+                
+                displayGameData();
+                showLoading(false);
+                document.getElementById('gameForm').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showError('Ошибка при поиске игры: ' + error.message);
+                showLoading(false);
+            }
+        }
+        
+        function displayGameData() {
+            if (!currentGameData) return;
+            
+            document.getElementById('previewImage').src = currentGameData.header_image;
+            document.getElementById('previewName').textContent = currentGameData.name;
+            document.getElementById('previewPrice').textContent = currentGameData.price;
+            
+            document.getElementById('gameName').value = currentGameData.name;
+            document.getElementById('gameSteamId').value = currentGameData.steam_id;
+            document.getElementById('gameDescription').value = currentGameData.description;
+            document.getElementById('gamePrice').value = currentGameData.price;
+            document.getElementById('downloadLink').value = currentGameData.download_link || '';
+            
+            // Отображаем скриншоты
+            const screenshotsGrid = document.getElementById('screenshotsGrid');
+            if (currentGameData.screenshots && currentGameData.screenshots.length > 0) {
+                screenshotsGrid.innerHTML = currentGameData.screenshots.map(src => 
+                    `<img src="${src}" alt="screenshot" onclick="window.open('${src}', '_blank')">`
+                ).join('');
+            } else {
+                screenshotsGrid.innerHTML = '<p style="color: #666;">Нет скриншотов</p>';
+            }
+        }
+        
+        // ========== СОХРАНЕНИЕ ИГРЫ ==========
+        async function saveGame() {
+            if (!currentGameData) {
+                showError('Нет данных для сохранения');
+                return;
+            }
+            
+            // Добавляем ссылку на скачивание
+            currentGameData.download_link = document.getElementById('downloadLink').value;
+            
+            // Проверяем, есть ли уже такая игра
+            const existingIndex = games.findIndex(g => g.steam_id === currentGameData.steam_id);
+            
+            if (existingIndex >= 0) {
+                // Обновляем существующую
+                games[existingIndex] = currentGameData;
+                showSuccess('Игра обновлена!');
+            } else {
+                // Добавляем новую
+                games.push(currentGameData);
+                showSuccess('Игра добавлена!');
+            }
+            
+            // Сохраняем в localStorage для теста
+            localStorage.setItem('games', JSON.stringify(games));
+            
+            // Обновляем список
+            displayGames();
+            updateStats();
+            
+            // Сброс формы
+            setTimeout(() => {
+                clearForm();
+            }, 2000);
+        }
+        
+        // ========== УДАЛЕНИЕ ИГРЫ ==========
+        function deleteGame(steamId) {
+            if (!confirm('Удалить игру?')) return;
+            
+            games = games.filter(g => g.steam_id != steamId);
+            localStorage.setItem('games', JSON.stringify(games));
+            displayGames();
+            updateStats();
+            showSuccess('Игра удалена');
+        }
+        
+        // ========== РЕДАКТИРОВАНИЕ ИГРЫ ==========
+        function editGame(steamId) {
+            const game = games.find(g => g.steam_id == steamId);
+            if (!game) return;
+            
+            currentGameData = game;
+            displayGameData();
+            document.getElementById('gameForm').style.display = 'block';
+            document.getElementById('steamId').value = steamId;
+            
+            // Прокрутка к форме
+            document.getElementById('gameForm').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // ========== ПРЕДПРОСМОТР ==========
+        function previewGame() {
+            if (!currentGameData) return;
+            
+            const modal = document.getElementById('previewModal');
+            const content = document.getElementById('previewContent');
+            
+            content.innerHTML = `
+                <div style="text-align: center;">
+                    <img src="${currentGameData.header_image}" style="width: 100%; margin-bottom: 1rem;">
+                    <h2 style="margin-bottom: 0.5rem;">${currentGameData.name}</h2>
+                    <p style="color: #666; margin-bottom: 1rem;">${currentGameData.description}</p>
+                    <div style="font-weight: 500; margin-bottom: 1rem;">${currentGameData.price}</div>
+                    ${currentGameData.download_link ? 
+                        `<a href="${currentGameData.download_link}" target="_blank" class="btn">СКАЧАТЬ</a>` : 
+                        '<span style="color: #999;">Нет ссылки на скачивание</span>'}
+                </div>
+            `;
+            
+            modal.classList.add('active');
+        }
+        
+        function closePreview() {
+            document.getElementById('previewModal').classList.remove('active');
+        }
+        
+        // ========== ПРЕДЛОЖЕНИЯ ==========
+        async function loadSuggestions() {
+            try {
+                const response = await fetch('suggestions.json?t=' + Date.now());
+                const suggestions = await response.json();
+                displaySuggestions(suggestions);
+            } catch (error) {
+                console.log('Нет предложений');
+            }
+        }
+        
+        function displaySuggestions(suggestions) {
+            const list = document.getElementById('suggestionsList');
+            
+            if (!suggestions || suggestions.length === 0) {
+                list.innerHTML = '<p style="color: #666;">Новых предложений нет</p>';
+                return;
+            }
+            
+            list.innerHTML = suggestions.map(s => `
+                <div class="game-item">
+                    <div>
+                        <div style="font-weight: 500;">${s.game}</div>
+                        <div style="color: #666; font-size: 0.8rem;">От: ${s.user} | ${new Date(s.date).toLocaleString()}</div>
+                        ${s.comment ? `<div style="color: #888; margin-top: 0.5rem;">${s.comment}</div>` : ''}
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-small" onclick="acceptSuggestion('${s.game}')">ПРИНЯТЬ</button>
+                        <button class="btn btn-small" style="border-color: #ff4444;" onclick="rejectSuggestion(${s.id})">✕</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function acceptSuggestion(gameName) {
+            document.getElementById('steamId').value = '';
+            document.getElementById('gameForm').style.display = 'block';
+            document.getElementById('previewName').textContent = gameName;
+            showSuccess(`Предложение принято! Найдите игру по Steam ID`);
+        }
+        
+        // ========== СТАТИСТИКА ==========
+        function updateStats() {
+            document.getElementById('totalGames').textContent = games.length;
+            
+            const gamesWithLinks = games.filter(g => g.download_link).length;
+            document.getElementById('totalDownloads').textContent = gamesWithLinks;
+            
+            // Предложения можно посчитать позже
+        }
+        
+        // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+        
+        function showSuccess(message) {
+            const el = document.getElementById('successMessage');
+            el.textContent = message;
+            el.style.display = 'block';
+            setTimeout(() => {
+                el.style.display = 'none';
+            }, 3000);
+        }
+        
+        function showError(message) {
+            const el = document.getElementById('errorMessage');
+            el.textContent = message;
+            el.style.display = 'block';
+            setTimeout(() => {
+                el.style.display = 'none';
+            }, 3000);
+        }
+        
+        function clearForm() {
+            document.getElementById('steamId').value = '';
+            document.getElementById('gameForm').style.display = 'none';
+            currentGameData = null;
+        }
+    </script>
 </body>
 </html>
