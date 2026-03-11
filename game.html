@@ -221,7 +221,7 @@
                 
                 <!-- Табы -->
                 <div class="tabs">
-                    <button class="tab active" onclick="showTab('description')">ОПИСАНИЕ</button>
+                    <button class="tab active" onclick="showTab('description', event)">ОПИСАНИЕ</button>
                 </div>
                 
                 <!-- Контент табов -->
@@ -242,7 +242,7 @@
                     
         
         // Переключение табов
-        function showTab(tab) {
+        function showTab(tab, event) {
             // Обновляем классы табов
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
@@ -261,5 +261,6 @@
     </script>
 </body>
 </html>
+
 
 
