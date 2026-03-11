@@ -3,35 +3,340 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Repacks by 9nge</title>
+    <title>Repacks by 9nge / качественные сборки игр</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Дополнительные стили для главной */
+        .site-title {
+            font-size: 4rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+        
+        .site-title span {
+            font-weight: 300;
+            color: #666;
+        }
+        
+        .site-subtitle {
+            font-size: 1rem;
+            color: #666;
+            letter-spacing: 1px;
+        }
+        
+        .site-subtitle span {
+            color: #000;
+            font-weight: 500;
+            border-bottom: 1px solid #000;
+        }
+        
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 2rem 0;
+            padding: 1rem;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+        
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #f5f5f5;
+        }
+        
+        .search-box {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            width: 250px;
+        }
+        
+        .sort-select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            background: white;
+        }
+        
+        .game-card {
+            position: relative;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .game-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #000;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+        
+        .game-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .game-repacker {
+            font-size: 0.8rem;
+            color: #999;
+        }
+        
+        .game-repacker span {
+            color: #000;
+            font-weight: 500;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 3rem 0;
+        }
+        
+        .page-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .page-btn.active {
+            background: #000;
+            color: white;
+            border-color: #000;
+        }
+        
+        .page-btn:hover {
+            border-color: #000;
+        }
+        
+        .footer-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 3rem 0;
+            padding: 2rem 0;
+            border-top: 1px solid #eee;
+        }
+        
+        .footer-section h4 {
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section li {
+            margin-bottom: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding: 2rem 0;
+            color: #999;
+            font-size: 0.8rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .featured-section {
+            margin: 3rem 0;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        
+        .featured-card {
+            background: #f5f5f5;
+            padding: 1rem;
+        }
+        
+        .featured-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .announcement {
+            background: #000;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .announcement a {
+            color: white;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <nav class="nav-bar">
         <div class="nav-links">
-            <a href="index.html">ИГРЫ</a>
+            <a href="index.html" style="font-weight: 700;">ГЛАВНАЯ</a>
             <a href="#" id="suggestLink">ПРЕДЛОЖИТЬ</a>
+            <a href="#">ВСЕ REPACKS</a>
+            <a href="#">ТОП ИГР</a>
+            <a href="#">FAQ</a>
         </div>
-        <div class="user-menu" id="userMenu">
-            <!-- JS подставит сюда -->
-        </div>
+        <div class="user-menu" id="userMenu"></div>
     </nav>
 
     <header>
         <div class="header-content">
-            <h1>Repacks by 9nge</h1>
-            <p class="subtitle">архив игр</p>
+            <h1 class="site-title">REPACKS <span>by 9nge</span></h1>
+            <p class="site-subtitle">качественные сборки игр / без потерь / <span>steam версии</span></p>
         </div>
     </header>
 
+    <!-- Анонс -->
+    <div class="announcement">
+        🔥 НОВЫЙ REPACK: S.T.A.L.K.E.R. 2 уже доступен! / Все репаки проверены лично 9nge
+    </div>
+
     <main>
+        <!-- Статистика -->
+        <div class="stats-bar" id="statsBar">
+            <div class="stat-item">
+                <div class="stat-value" id="totalGames">0</div>
+                <div class="stat-label">ВСЕГО REPACKS</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="totalDownloads">0</div>
+                <div class="stat-label">ЗАГРУЗОК</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="lastUpdate">2024</div>
+                <div class="stat-label">ПОСЛЕДНЕЕ</div>
+            </div>
+        </div>
+
+        <!-- Фильтры -->
+        <div class="filter-bar">
+            <input type="text" class="search-box" id="searchInput" placeholder="🔍 Поиск репаков..." onkeyup="searchGames()">
+            
+            <select class="sort-select" id="sortSelect" onchange="sortGames()">
+                <option value="newest">Сначала новые</option>
+                <option value="oldest">Сначала старые</option>
+                <option value="name">По названию</option>
+                <option value="price">По цене</option>
+            </select>
+        </div>
+
+        <!-- Популярные игры -->
+        <div class="featured-section">
+            <h2 class="section-title">🔥 ПОПУЛЯРНЫЕ REPACKS</h2>
+            <div class="featured-grid" id="featuredGrid">
+                <!-- Загрузка -->
+                <div class="loading">ЗАГРУЗКА...</div>
+            </div>
+        </div>
+
+        <!-- Все игры -->
+        <h2 class="section-title">📁 ВСЕ REPACKS</h2>
         <div class="games-grid" id="gamesGrid">
             <div class="loading">ЗАГРУЗКА...</div>
         </div>
+
+        <!-- Пагинация -->
+        <div class="pagination" id="pagination">
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn">→</button>
+        </div>
+
+        <!-- Информация в футере -->
+        <div class="footer-info">
+            <div class="footer-section">
+                <h4>О REPACKS</h4>
+                <ul>
+                    <li>✓ Steam версии игр</li>
+                    <li>✓ Без потери качества</li>
+                    <li>✓ Сжатие до 50%</li>
+                    <li>✓ Проверено на вирусы</li>
+                    <li>✓ Легкая установка</li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>ПОПУЛЯРНОЕ</h4>
+                <ul>
+                    <li>S.T.A.L.K.E.R. 2</li>
+                    <li>Cyberpunk 2077</li>
+                    <li>Red Dead Redemption 2</li>
+                    <li>GTA V</li>
+                    <li>The Witcher 3</li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>9NGE</h4>
+                <ul>
+                    <li>Делаю репаки с 2020</li>
+                    <li>Все игры с Steam</li>
+                    <li>Без рекламы и смс</li>
+                    <li>По вопросам: @9nge</li>
+                </ul>
+            </div>
+        </div>
     </main>
 
-    <button class="suggest-btn" id="suggestBtn">+ ПРЕДЛОЖИТЬ ИГРУ</button>
+    <footer>
+        <div class="copyright">
+            <p>REPACKS BY 9NGE / 2024 / Все репаки распространяются бесплатно</p>
+            <p style="margin-top: 0.5rem; color: #999;">Если игра понравилась — купи её в Steam!</p>
+        </div>
+    </footer>
 
+    <!-- Модальное окно предложения игры -->
     <div class="modal" id="suggestModal">
         <div class="modal-content">
             <span class="modal-close" id="closeModal">×</span>
@@ -39,24 +344,83 @@
             
             <div class="form-group">
                 <label>НАЗВАНИЕ ИГРЫ</label>
-                <input type="text" id="suggestGameInput" placeholder="например: Counter-Strike 2">
+                <input type="text" id="suggestGameInput" placeholder="например: S.T.A.L.K.E.R. 2">
             </div>
             
             <div class="form-group">
-                <label>КОММЕНТАРИЙ</label>
-                <textarea id="suggestComment" rows="3" placeholder="почему стоит добавить..."></textarea>
+                <label>ПОЧЕМУ ЭТОТ РЕПАК?</label>
+                <textarea id="suggestComment" rows="3" placeholder="твои пожелания..."></textarea>
             </div>
             
             <button class="btn btn-block" onclick="submitSuggestion()">ОТПРАВИТЬ</button>
         </div>
     </div>
 
-    <footer>
-        <p>Repacks by 9nge / 2024</p>
-    </footer>
-
     <script src="auth.js"></script>
     <script src="script.js"></script>
+    <script>
+        // Дополнительные функции для главной
+        function searchGames() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const games = JSON.parse(localStorage.getItem('games') || '[]');
+            
+            const filtered = games.filter(game => 
+                game.name.toLowerCase().includes(search)
+            );
+            
+            displayFilteredGames(filtered);
+        }
+        
+        function sortGames() {
+            const sort = document.getElementById('sortSelect').value;
+            const games = JSON.parse(localStorage.getItem('games') || '[]');
+            
+            if (sort === 'newest') {
+                games.sort((a, b) => new Date(b.added) - new Date(a.added));
+            } else if (sort === 'oldest') {
+                games.sort((a, b) => new Date(a.added) - new Date(b.added));
+            } else if (sort === 'name') {
+                games.sort((a, b) => a.name.localeCompare(b.name));
+            }
+            
+            displayGames(games);
+        }
+        
+        function displayFilteredGames(games) {
+            const grid = document.getElementById('gamesGrid');
+            
+            if (games.length === 0) {
+                grid.innerHTML = '<div class="loading">НИЧЕГО НЕ НАЙДЕНО</div>';
+                return;
+            }
+            
+            grid.innerHTML = games.map(game => `
+                <div class="game-card" onclick="window.location.href='game.html?id=${game.steam_id}'">
+                    <span class="game-badge">REPACK</span>
+                    <img src="${game.header_image}" class="game-header-img">
+                    <div class="game-info">
+                        <h2 class="game-title">${game.name}</h2>
+                        <div class="game-footer">
+                            <span class="game-price">${game.price}</span>
+                            <span class="game-repacker"><span>9nge</span></span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Обновляем статистику
+        function updateStats() {
+            const games = JSON.parse(localStorage.getItem('games') || '[]');
+            document.getElementById('totalGames').textContent = games.length;
+            document.getElementById('totalDownloads').textContent = games.filter(g => g.download_link).length * 1000 + '+';
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleDateString('ru-RU');
+        }
+        
+        // Вызываем при загрузке
+        document.addEventListener('DOMContentLoaded', () => {
+            updateStats();
+        });
+    </script>
 </body>
 </html>
-
