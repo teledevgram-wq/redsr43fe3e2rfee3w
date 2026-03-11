@@ -67,50 +67,29 @@ function logout() {
 
 // ========== ЗАГРУЗКА ИГР ==========
 
+// Добавьте в script.js функцию загрузки игр из localStorage
+
 async function loadGames() {
     const grid = document.getElementById('gamesGrid');
     if (!grid) return;
     
     try {
-        console.log('Загружаем игры...');
-        
-        // Добавляем тестовые игры если файл пустой
+        // Сначала пробуем загрузить из localStorage (для теста)
         let games = [];
+        const savedGames = localStorage.getItem('games');
         
-        try {
-            const response = await fetch(`${GAMES_JSON}?t=${Date.now()}`);
-            if (response.ok) {
-                games = await response.json();
-            }
-        } catch (e) {
-            console.log('Ошибка загрузки games.json, используем тестовые данные');
+        if (savedGames) {
+            games = JSON.parse(savedGames);
+        } else {
+            // Если нет, загружаем из JSON
+            const response = await fetch('games.json?t=' + Date.now());
+            games = await response.json();
         }
         
-        // Если игр нет, показываем тестовые для примера
         if (!games || games.length === 0) {
-            games = [
-                {
-                    steam_id: "730",
-                    name: "COUNTER-STRIKE 2",
-                    description: "Counter-Strike 2 — многопользовательская компьютерная игра в жанре шутера от первого лица, разработанная компанией Valve. Это обновленная версия Counter-Strike: Global Offensive на движке Source 2.",
-                    header_image: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/header.jpg",
-                    price: "Бесплатно",
-                    download_link: "",
-                    added: "2024-01-01T00:00:00.000Z"
-                },
-                {
-                    steam_id: "570",
-                    name: "DOTA 2",
-                    description: "Dota 2 — многопользовательская командная компьютерная игра в жанре MOBA, разработанная и изданная компанией Valve. Игра является продолжением DotA.",
-                    header_image: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/570/header.jpg",
-                    price: "Бесплатно",
-                    download_link: "",
-                    added: "2024-01-01T00:00:00.000Z"
-                }
-            ];
+            grid.innerHTML = '<div class="loading">ИГР ПОКА НЕТ</div>';
+            return;
         }
-        
-        console.log('Игры для отображения:', games);
         
         grid.innerHTML = games.map(game => `
             <div class="game-card" onclick="window.location.href='game.html?id=${game.steam_id}'">
@@ -131,4 +110,5 @@ async function loadGames() {
         console.error('Ошибка загрузки игр:', error);
         grid.innerHTML = '<div class="error">⚠️ ОШИБКА ЗАГРУЗКИ</div>';
     }
+
 }
