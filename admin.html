@@ -261,21 +261,20 @@ async function findGame() {
             navigator.clipboard.writeText(json);
             alert('JSON скопирован! Теперь вставь его в файл games.json');
         }
-
-        // ========== РУЧНОЙ ВВОД ==========
+// ========== РУЧНОЙ ВВОД ==========
 function manualInput() {
-    const steamId = document.getElementById('steamId').value || 'manual';
+    const steamId = document.getElementById('steamId')?.value || 'manual';
     
     // Просим ввести данные
     const name = prompt('🎮 Введите название игры:', 'S.T.A.L.K.E.R. 2');
     if (!name) return;
     
-    const description = prompt('📝 Введите описание игры (можно скопировать из Steam):', 'Долгожданное продолжение культовой серии...');
+    const description = prompt('📝 Введите описание игры:', 'Долгожданное продолжение культовой серии...');
     if (!description) return;
     
-    const image = prompt('🖼️ Вставьте ссылку на изображение (из Steam):', 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2825530/header.jpg');
+    const image = prompt('🖼️ Ссылка на изображение (Enter если нет):', 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2825530/header.jpg');
     
-    const price = prompt('💰 Цена:', '1999₽');
+    const price = prompt('💰 Цена (Enter если бесплатно):', '1999₽');
     
     // Создаем объект игры
     currentGame = {
@@ -288,24 +287,50 @@ function manualInput() {
         added: new Date().toISOString()
     };
     
-    // Заполняем форму
-    document.getElementById('previewImage').src = currentGame.header_image;
-    document.getElementById('previewName').textContent = currentGame.name;
-    document.getElementById('previewPrice').textContent = currentGame.price;
-    document.getElementById('gameName').value = currentGame.name;
-    document.getElementById('gameSteamId').value = currentGame.steam_id;
-    document.getElementById('gameDescription').value = currentGame.description;
-    document.getElementById('gamePrice').value = currentGame.price;
+    console.log('Игра создана:', currentGame);
+    
+    // Заполняем форму - ПРОВЕРЯЕМ каждый элемент!
+    
+    // Preview
+    const previewImage = document.getElementById('previewImage');
+    if (previewImage) previewImage.src = currentGame.header_image;
+    
+    const previewName = document.getElementById('previewName');
+    if (previewName) previewName.textContent = currentGame.name;
+    
+    const previewPrice = document.getElementById('previewPrice');
+    if (previewPrice) previewPrice.textContent = currentGame.price;
+    
+    // Поля формы
+    const gameName = document.getElementById('gameName');
+    if (gameName) gameName.value = currentGame.name;
+    
+    const gameSteamId = document.getElementById('gameSteamId');
+    if (gameSteamId) gameSteamId.value = currentGame.steam_id;
+    
+    const gameDescription = document.getElementById('gameDescription');
+    if (gameDescription) gameDescription.value = currentGame.description;
+    
+    const gamePrice = document.getElementById('gamePrice');
+    if (gamePrice) gamePrice.value = currentGame.price;
+    
+    const downloadLink = document.getElementById('downloadLink');
+    if (downloadLink) downloadLink.value = ''; // Очищаем ссылку
     
     // Показываем форму
-    document.getElementById('gameForm').style.display = 'block';
+    const gameForm = document.getElementById('gameForm');
+    if (gameForm) gameForm.style.display = 'block';
     
     // Прячем загрузку
-    document.getElementById('loading').style.display = 'none';
+    const loading = document.getElementById('loading');
+    if (loading) loading.style.display = 'none';
+    
+    alert('✅ Данные заполнены! Теперь добавь ссылку на скачивание и нажми СОХРАНИТЬ');
 }
         
     </script>
 </body>
 </html>
+
 
 
