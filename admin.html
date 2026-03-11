@@ -6,7 +6,6 @@
     <title>GAME VAULT / АДМИНКА</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Стили как в предыдущей версии */
         .github-setup {
             background: #f5f5f5;
             border: 1px solid #eee;
@@ -22,19 +21,72 @@
             margin-bottom: 1rem;
         }
         
-        .success {
-            background: #00ff00;
-            color: #000;
-            padding: 1rem;
-            margin-bottom: 1rem;
+        .success { background: #00ff00; color: #000; padding: 1rem; margin: 1rem 0; }
+        .error { background: #ff4444; color: #fff; padding: 1rem; margin: 1rem 0; }
+        .warning { background: #ffaa00; color: #000; padding: 1rem; margin: 1rem 0; }
+        
+        .steam-search {
+            background: #f5f5f5;
+            border: 1px solid #eee;
+            padding: 2rem;
+            margin-bottom: 2rem;
         }
         
-        .error {
-            background: #ff4444;
-            color: #fff;
-            padding: 1rem;
-            margin-bottom: 1rem;
+        .game-preview {
+            background: white;
+            border: 1px solid #eee;
+            padding: 2rem;
+            margin-top: 2rem;
         }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+        
+        .form-row label { color: #666; font-weight: 500; }
+        .form-row input, .form-row textarea, .form-row select {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            font-family: inherit;
+        }
+        
+        .games-list { margin-top: 3rem; }
+        
+        .game-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .game-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+        }
+        
+        .game-info img { width: 50px; height: 50px; object-fit: cover; }
+        
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+        
+        .preview-header {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .preview-header img { width: 200px; height: auto; }
     </style>
 </head>
 <body>
@@ -50,21 +102,32 @@
         <div class="admin-container">
             <h1 style="margin-bottom: 2rem;">ПАНЕЛЬ УПРАВЛЕНИЯ</h1>
             
+            <!-- ИНСТРУКЦИЯ -->
+            <div class="warning">
+                <strong>🔑 Как получить GitHub токен:</strong>
+                <ol style="margin-top: 1rem; margin-left: 1.5rem;">
+                    <li>Зайди на <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a></li>
+                    <li>Нажми "Generate new token (classic)"</li>
+                    <li>Выбери права: <strong>repo</strong> (полный доступ)</li>
+                    <li>Скопируй токен (начинается с ghp_)</li>
+                </ol>
+            </div>
+            
             <!-- Настройки GitHub -->
             <div class="github-setup">
                 <h2 style="margin-bottom: 1.5rem;">🔧 НАСТРОЙКА GITHUB</h2>
                 
-                <div style="margin-bottom: 1rem;">
+                <div class="form-row">
                     <label>GitHub Token:</label>
                     <input type="password" id="githubToken" class="token-input" placeholder="ghp_xxxxxxxxxxxxxxx">
                 </div>
                 
-                <div style="margin-bottom: 1rem;">
+                <div class="form-row">
                     <label>Имя пользователя:</label>
                     <input type="text" id="githubUsername" class="token-input" placeholder="9nge">
                 </div>
                 
-                <div style="margin-bottom: 1rem;">
+                <div class="form-row">
                     <label>Название репозитория:</label>
                     <input type="text" id="githubRepo" class="token-input" placeholder="название-репозитория">
                 </div>
@@ -81,10 +144,11 @@
                 
                 <div class="form-row">
                     <label>STEAM ID:</label>
-                    <input type="text" id="steamId" placeholder="Например: 730 (Counter-Strike 2)">
+                    <input type="text" id="steamId" placeholder="730 (Counter-Strike 2)">
                 </div>
                 
                 <button class="btn" onclick="searchSteamGame()">НАЙТИ В STEAM</button>
+                <button class="btn" onclick="clearForm()">ОЧИСТИТЬ</button>
                 
                 <div class="loading-spinner" id="loading">ПОИСК...</div>
             </div>
@@ -128,7 +192,6 @@
                     </div>
                     
                     <button class="btn" onclick="saveGameToGithub()">💾 СОХРАНИТЬ В РЕПОЗИТОРИЙ</button>
-                    <button class="btn" onclick="clearForm()">ОЧИСТИТЬ</button>
                 </div>
             </div>
             
@@ -155,11 +218,7 @@
                 return;
             }
             
-            // Загружаем сохраненные настройки GitHub
             loadGithubConfig();
-            
-            // Загружаем игры из репозитория
-            loadGamesFromGithub();
         });
         
         // ========== НАСТРОЙКИ GITHUB ==========
@@ -170,18 +229,31 @@
                 document.getElementById('githubToken').value = githubConfig.token || '';
                 document.getElementById('githubUsername').value = githubConfig.username || '';
                 document.getElementById('githubRepo').value = githubConfig.repo || '';
+                
+                // Если есть токен, пробуем загрузить игры
+                if (githubConfig.token) {
+                    loadGamesFromGithub();
+                }
             }
         }
         
         function saveGithubConfig() {
             githubConfig = {
-                token: document.getElementById('githubToken').value,
-                username: document.getElementById('githubUsername').value,
-                repo: document.getElementById('githubRepo').value
+                token: document.getElementById('githubToken').value.trim(),
+                username: document.getElementById('githubUsername').value.trim(),
+                repo: document.getElementById('githubRepo').value.trim()
             };
+            
+            if (!githubConfig.token || !githubConfig.username || !githubConfig.repo) {
+                showStatus('❌ Заполните все поля', 'error');
+                return;
+            }
             
             localStorage.setItem('github_config', JSON.stringify(githubConfig));
             showStatus('✅ Настройки сохранены', 'success');
+            
+            // Пробуем загрузить игры
+            loadGamesFromGithub();
         }
         
         async function testGithubConnection() {
@@ -190,8 +262,11 @@
                 return;
             }
             
+            showStatus('⏳ Проверка подключения...', 'warning');
+            
             try {
-                const response = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/`, {
+                // Простой запрос для проверки токена
+                const response = await fetch('https://api.github.com/user', {
                     headers: {
                         'Authorization': `token ${githubConfig.token}`,
                         'Accept': 'application/vnd.github.v3+json'
@@ -199,10 +274,28 @@
                 });
                 
                 if (response.ok) {
-                    showStatus('✅ Подключение к GitHub работает!', 'success');
+                    const userData = await response.json();
+                    showStatus(`✅ Подключено как: ${userData.login}`, 'success');
+                    
+                    // Проверяем доступ к репозиторию
+                    const repoCheck = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}`, {
+                        headers: {
+                            'Authorization': `token ${githubConfig.token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+                    
+                    if (repoCheck.ok) {
+                        showStatus(`✅ Доступ к репозиторию есть`, 'success');
+                    } else {
+                        showStatus(`❌ Нет доступа к репозиторию. Проверь название`, 'error');
+                    }
+                    
                 } else {
-                    showStatus('❌ Ошибка подключения. Проверьте токен и права доступа', 'error');
+                    const error = await response.json();
+                    showStatus(`❌ Ошибка: ${error.message}`, 'error');
                 }
+                
             } catch (error) {
                 showStatus('❌ Ошибка: ' + error.message, 'error');
             }
@@ -211,9 +304,6 @@
         function showStatus(message, type) {
             const status = document.getElementById('githubStatus');
             status.innerHTML = `<div class="${type}">${message}</div>`;
-            setTimeout(() => {
-                status.innerHTML = '';
-            }, 5000);
         }
         
         // ========== ЗАГРУЗКА ИГР ИЗ GITHUB ==========
@@ -224,6 +314,8 @@
             }
             
             try {
+                console.log('Загружаем games.json из репозитория...');
+                
                 const response = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/games.json`, {
                     headers: {
                         'Authorization': `token ${githubConfig.token}`,
@@ -231,17 +323,29 @@
                     }
                 });
                 
-                if (response.ok) {
-                    const data = await response.json();
-                    const content = atob(data.content);
-                    const games = JSON.parse(content);
-                    displayGames(games);
-                } else {
-                    console.log('games.json не найден, будет создан');
-                    displayGames([]);
+                if (response.status === 404) {
+                    console.log('games.json не найден, будет создан при сохранении');
+                    document.getElementById('gamesList').innerHTML = '<p style="color: #666;">Файл games.json будет создан при добавлении первой игры</p>';
+                    return;
                 }
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Ошибка загрузки');
+                }
+                
+                const data = await response.json();
+                
+                // Декодируем base64 content
+                const content = atob(data.content);
+                const games = JSON.parse(content);
+                
+                console.log('Загружено игр:', games.length);
+                displayGames(games);
+                
             } catch (error) {
                 console.error('Ошибка загрузки из GitHub:', error);
+                document.getElementById('gamesList').innerHTML = `<p style="color: #ff4444;">Ошибка: ${error.message}</p>`;
             }
         }
         
@@ -279,47 +383,76 @@
             }
             
             document.getElementById('loading').style.display = 'block';
+            document.getElementById('loading').textContent = 'ПОИСК В STEAM...';
             
-            try {
-                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://store.steampowered.com/api/appdetails?appids=${steamId}&l=russian`)}`);
-                const data = await response.json();
-                const gameData = JSON.parse(data.contents);
-                
-                if (!gameData[steamId]?.success) {
-                    alert('Игра не найдена');
-                    document.getElementById('loading').style.display = 'none';
-                    return;
+            // Список прокси на случай если один не работает
+            const proxies = [
+                'https://api.allorigins.win/get?url=',
+                'https://corsproxy.io/?',
+                'https://cors-anywhere.herokuapp.com/'
+            ];
+            
+            let gameData = null;
+            let lastError = null;
+            
+            for (let proxy of proxies) {
+                try {
+                    console.log('Пробуем прокси:', proxy);
+                    
+                    const response = await fetch(proxy + encodeURIComponent(`https://store.steampowered.com/api/appdetails?appids=${steamId}&l=russian`));
+                    
+                    if (!response.ok) continue;
+                    
+                    const data = await response.json();
+                    
+                    // Для allorigins нужно парсить содержимое
+                    let gameInfo;
+                    if (proxy.includes('allorigins')) {
+                        gameInfo = JSON.parse(data.contents);
+                    } else {
+                        gameInfo = data;
+                    }
+                    
+                    if (gameInfo[steamId]?.success) {
+                        gameData = gameInfo[steamId].data;
+                        break;
+                    }
+                    
+                } catch (e) {
+                    lastError = e;
+                    console.log('Прокси не работает:', proxy, e);
+                    continue;
                 }
-                
-                const game = gameData[steamId].data;
-                
-                currentGameData = {
-                    steam_id: steamId,
-                    name: game.name || 'Без названия',
-                    description: game.short_description || 'Описание отсутствует',
-                    header_image: game.header_image || '',
-                    screenshots: game.screenshots?.map(s => s.path_full) || [],
-                    price: game.price_overview?.final_formatted || 'Бесплатно',
-                    download_link: '',
-                    added: new Date().toISOString()
-                };
-                
-                // Заполняем форму
-                document.getElementById('previewImage').src = currentGameData.header_image;
-                document.getElementById('previewName').textContent = currentGameData.name;
-                document.getElementById('previewPrice').textContent = currentGameData.price;
-                document.getElementById('gameName').value = currentGameData.name;
-                document.getElementById('gameSteamId').value = currentGameData.steam_id;
-                document.getElementById('gameDescription').value = currentGameData.description;
-                document.getElementById('gamePrice').value = currentGameData.price;
-                
-                document.getElementById('gameForm').style.display = 'block';
-                document.getElementById('loading').style.display = 'none';
-                
-            } catch (error) {
-                alert('Ошибка: ' + error.message);
-                document.getElementById('loading').style.display = 'none';
             }
+            
+            if (!gameData) {
+                alert('Игра не найдена в Steam. Попробуй другой ID');
+                document.getElementById('loading').style.display = 'none';
+                return;
+            }
+            
+            // Создаем объект игры
+            currentGameData = {
+                steam_id: steamId,
+                name: gameData.name || 'Без названия',
+                description: gameData.short_description || 'Описание отсутствует',
+                header_image: gameData.header_image || '',
+                price: gameData.price_overview?.final_formatted || 'Бесплатно',
+                download_link: '',
+                added: new Date().toISOString()
+            };
+            
+            // Заполняем форму
+            document.getElementById('previewImage').src = currentGameData.header_image;
+            document.getElementById('previewName').textContent = currentGameData.name;
+            document.getElementById('previewPrice').textContent = currentGameData.price;
+            document.getElementById('gameName').value = currentGameData.name;
+            document.getElementById('gameSteamId').value = currentGameData.steam_id;
+            document.getElementById('gameDescription').value = currentGameData.description;
+            document.getElementById('gamePrice').value = currentGameData.price;
+            
+            document.getElementById('gameForm').style.display = 'block';
+            document.getElementById('loading').style.display = 'none';
         }
         
         // ========== СОХРАНЕНИЕ В GITHUB ==========
@@ -338,29 +471,36 @@
             currentGameData.download_link = document.getElementById('downloadLink').value;
             
             document.getElementById('loading').style.display = 'block';
+            document.getElementById('loading').textContent = 'СОХРАНЕНИЕ В GITHUB...';
             
             try {
-                // Получаем текущий файл games.json
+                // Получаем текущий файл
                 let sha = null;
                 let games = [];
                 
-                const getUrl = `https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/games.json`;
+                const apiUrl = `https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/games.json`;
                 
-                const getResponse = await fetch(getUrl, {
+                const getResponse = await fetch(apiUrl, {
                     headers: {
                         'Authorization': `token ${githubConfig.token}`,
                         'Accept': 'application/vnd.github.v3+json'
                     }
                 });
                 
-                if (getResponse.ok) {
+                if (getResponse.status === 404) {
+                    console.log('Файл не существует, будет создан новый');
+                    games = [];
+                } else if (getResponse.ok) {
                     const fileData = await getResponse.json();
                     sha = fileData.sha;
                     const content = atob(fileData.content);
                     games = JSON.parse(content);
+                } else {
+                    const error = await getResponse.json();
+                    throw new Error(error.message);
                 }
                 
-                // Проверяем, есть ли уже такая игра
+                // Обновляем или добавляем игру
                 const existingIndex = games.findIndex(g => g.steam_id === currentGameData.steam_id);
                 
                 if (existingIndex >= 0) {
@@ -369,10 +509,10 @@
                     games.push(currentGameData);
                 }
                 
-                // Сохраняем обратно в GitHub
+                // Сохраняем
                 const content = btoa(unescape(encodeURIComponent(JSON.stringify(games, null, 2))));
                 
-                const saveResponse = await fetch(getUrl, {
+                const saveResponse = await fetch(apiUrl, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `token ${githubConfig.token}`,
@@ -380,7 +520,7 @@
                         'Accept': 'application/vnd.github.v3+json'
                     },
                     body: JSON.stringify({
-                        message: `Add/Update game: ${currentGameData.name}`,
+                        message: `Игра: ${currentGameData.name}`,
                         content: content,
                         sha: sha
                     })
@@ -388,14 +528,23 @@
                 
                 if (saveResponse.ok) {
                     alert('✅ Игра сохранена в репозиторий!');
-                    loadGamesFromGithub(); // Обновляем список
-                    clearForm();
+                    
+                    // Очищаем форму
+                    document.getElementById('steamId').value = '';
+                    document.getElementById('gameForm').style.display = 'none';
+                    document.getElementById('downloadLink').value = '';
+                    currentGameData = null;
+                    
+                    // Обновляем список
+                    loadGamesFromGithub();
+                    
                 } else {
                     const error = await saveResponse.json();
-                    alert('❌ Ошибка сохранения: ' + error.message);
+                    throw new Error(error.message);
                 }
                 
             } catch (error) {
+                console.error('Ошибка сохранения:', error);
                 alert('❌ Ошибка: ' + error.message);
             } finally {
                 document.getElementById('loading').style.display = 'none';
@@ -404,13 +553,13 @@
         
         // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
         function editGame(steamId) {
-            // Загружаем игру для редактирования
-            loadGamesFromGithub(); // В реальности нужно загрузить конкретную игру
+            alert('Редактирование будет доступно в следующей версии');
         }
         
         function clearForm() {
             document.getElementById('steamId').value = '';
             document.getElementById('gameForm').style.display = 'none';
+            document.getElementById('downloadLink').value = '';
             currentGameData = null;
         }
     </script>
